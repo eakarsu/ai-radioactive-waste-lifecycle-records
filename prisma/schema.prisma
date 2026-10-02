@@ -1,0 +1,368 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model WasteProgram {
+ id String @id @default(cuid())
+ name String
+ licenseNumber String
+ organization String
+ radiationOfficer String
+ location String
+ reviewAt DateTime
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseWastePackage_wasteProgramId WastePackage[] @relation("WastePackage_wasteProgramId")
+ inverseWasteAddition_wasteProgramId WasteAddition[] @relation("WasteAddition_wasteProgramId")
+ inverseStorageSurvey_wasteProgramId StorageSurvey[] @relation("StorageSurvey_wasteProgramId")
+ inversePackageInspection_wasteProgramId PackageInspection[] @relation("PackageInspection_wasteProgramId")
+ inverseWasteTransfer_wasteProgramId WasteTransfer[] @relation("WasteTransfer_wasteProgramId")
+ inverseWasteManifest_wasteProgramId WasteManifest[] @relation("WasteManifest_wasteProgramId")
+ inverseDisposalReceipt_wasteProgramId DisposalReceipt[] @relation("DisposalReceipt_wasteProgramId")
+ inverseWasteIncident_wasteProgramId WasteIncident[] @relation("WasteIncident_wasteProgramId")
+ inverseOperationalTask_wasteProgramId OperationalTask[] @relation("OperationalTask_wasteProgramId")
+ inverseRuleVersion_wasteProgramId RuleVersion[] @relation("RuleVersion_wasteProgramId")
+ inverseDocumentRequirement_wasteProgramId DocumentRequirement[] @relation("DocumentRequirement_wasteProgramId")
+}
+
+model WastePackage {
+ id String @id @default(cuid())
+ name String
+ packageNumber String
+ radionuclide String
+ activityBq Float
+ measuredAt DateTime
+ storageLocation String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWasteProgramId WasteProgram @relation("WastePackage_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+ inverseWasteAddition_wastePackageId WasteAddition[] @relation("WasteAddition_wastePackageId")
+ inverseStorageSurvey_wastePackageId StorageSurvey[] @relation("StorageSurvey_wastePackageId")
+ inversePackageInspection_wastePackageId PackageInspection[] @relation("PackageInspection_wastePackageId")
+ inverseWasteTransfer_wastePackageId WasteTransfer[] @relation("WasteTransfer_wastePackageId")
+ inverseWasteManifest_wastePackageId WasteManifest[] @relation("WasteManifest_wastePackageId")
+ inverseDisposalReceipt_wastePackageId DisposalReceipt[] @relation("DisposalReceipt_wastePackageId")
+ inverseWasteIncident_wastePackageId WasteIncident[] @relation("WasteIncident_wastePackageId")
+}
+
+model WasteAddition {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ addedAt DateTime
+ activityBq Float
+ volumeMl Float
+ sourceReference String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("WasteAddition_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("WasteAddition_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model StorageSurvey {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ surveyedAt DateTime
+ instrument String
+ reading Float
+ unit String
+ surveyor String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("StorageSurvey_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("StorageSurvey_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model PackageInspection {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ inspectedAt DateTime
+ sealNumber String
+ observations String
+ inspector String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("PackageInspection_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("PackageInspection_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model WasteTransfer {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ transferredAt DateTime
+ carrier String
+ destination String
+ authorizationReference String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("WasteTransfer_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("WasteTransfer_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model WasteManifest {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ manifestNumber String
+ preparedAt DateTime
+ contents String
+ recipient String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("WasteManifest_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("WasteManifest_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model DisposalReceipt {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ receivedAt DateTime
+ facility String
+ method String
+ receipt String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("DisposalReceipt_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("DisposalReceipt_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model WasteIncident {
+ id String @id @default(cuid())
+ title String
+ wastePackageId String
+ observedAt DateTime
+ description String
+ response String
+ reviewer String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWastePackageId WastePackage @relation("WasteIncident_wastePackageId", fields: [wastePackageId], references: [id], onDelete: Restrict)
+ linkedWasteProgramId WasteProgram @relation("WasteIncident_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWasteProgramId WasteProgram @relation("OperationalTask_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWasteProgramId WasteProgram @relation("RuleVersion_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ wasteProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([wasteProgramId])
+ linkedWasteProgramId WasteProgram @relation("DocumentRequirement_wasteProgramId", fields: [wasteProgramId], references: [id], onDelete: Restrict)
+}

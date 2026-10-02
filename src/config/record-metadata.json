@@ -1,0 +1,618 @@
+{
+  "WasteProgram": {
+    "name": "WasteProgram",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "licenseNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "organization",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "radiationOfficer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "location",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "WastePackage": {
+    "name": "WastePackage",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "packageNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "radionuclide",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "activityBq",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "measuredAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "storageLocation",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "WasteAddition": {
+    "name": "WasteAddition",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "addedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "activityBq",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "volumeMl",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "StorageSurvey": {
+    "name": "StorageSurvey",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "surveyedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "instrument",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reading",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "unit",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "surveyor",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "PackageInspection": {
+    "name": "PackageInspection",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "inspectedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sealNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "observations",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "inspector",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "WasteTransfer": {
+    "name": "WasteTransfer",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "transferredAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "carrier",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "destination",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "authorizationReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "WasteManifest": {
+    "name": "WasteManifest",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "manifestNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "preparedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "contents",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "recipient",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "DisposalReceipt": {
+    "name": "DisposalReceipt",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "receivedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "facility",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "method",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "WasteIncident": {
+    "name": "WasteIncident",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wastePackageId",
+        "kind": "string",
+        "required": true,
+        "relation": "WastePackage"
+      },
+      {
+        "name": "observedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "description",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "response",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "wasteProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "WasteProgram"
+      }
+    ],
+    "parent": {
+      "entity": "WasteProgram",
+      "field": "wasteProgramId"
+    }
+  }
+}
